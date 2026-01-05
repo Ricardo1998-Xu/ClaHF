@@ -1,7 +1,8 @@
 # ClaHF: A Human Feedback-inspired Reinforcement Learning Framework for Improving Classification Tasks
 
 ## 🚀 Overview
-**ClaHF**: a human feedback-inspired reinforcement learning (RL) framework for text classification that integrates preference modeling and RL optimization into the classification pipeline without requiring additional human annotations.
+**ClaHF**: a human feedback-inspired reinforcement learning (RL) framework for text classification that integrates preference modeling and RL optimization into the classification pipeline without requiring additional human annotations. 
+
 ---
 
 ## 📂 Repository Structure

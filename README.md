@@ -7,23 +7,35 @@
 
 ## 📂 Repository Structure
 ```bash
-BioDefect/
-│── 📁 Dataset/                     # Contains datasets used in the study, including BioDefect
-│   ├── 📂 BioDefect/               # The BioDefect dataset
+ClaHF/
+│── 📁 Dataset/                     # Contains datasets used in the study
+│   ├── 📂 CoLA/                    # The CoLA dataset
 │   │   ├── 📜 train.jsonl          # Training dataset
-│   │   ├── 📜 Scanpy_test.jsonl    # Testing dataset
-│   │   ├── 📜 Bowtie2_test.jsonl   # Testing dataset
-│   │   ├── 📜 BWA_test.jsonl       # Testing dataset
-│   │   ├── 📜 Details.xlsx         # Detailed information about defect functions
+│   │   ├── 📜 test.jsonl           # Testing dataset
+│   │   ├── 📜 valid.jsonl          # valid dataset
 │   │   └── ...
-│   ├── 📂 Devign/                  # Existing dataset used for comparison
-│   └── 📂 REVEAL/                  # Existing dataset used for comparison
+│   ├── 📂 MRPC/
+│   ├── 📂 SST-5/              
+│   └── ...               
 │
-│── 📁 Classification/            # Implementations of classification models
+│── 📁 Pre_Dataset/                 # Preference datasets
+│   ├── 📂 CoLA/                    # The CoLA dataset
+│   │   ├── 📜 train.jsonl          # Training dataset
+│   │   ├── 📜 test.jsonl           # Testing dataset
+│   │   ├── 📜 valid.jsonl          # valid dataset
+│   │   └── ...
+│   ├── 📂 MRPC/
+│   ├── 📂 SST-5/              
+│   └── ...                    
+│
+│── 📁 Code/            # Implementations of classification models
 │   ├── 🤖 Test1_bert/              # BERT model implementation
 │   │   ├── 📜 clss_indices.json    # Label mapping file
 │   │   ├── 📜 model.py             # Model definition
+│   │   ├── 📜 RewardModel.py       # Reward model definition
 │   │   ├── 📜 run.py               # Script for fine-tuning the model
+│   │   ├── 📜 run_RL.py            # RL optimization
+│   │   ├── 📜 run_RM.py            # Script for training the RM
 │   │   ├── 📜 test.py              # Script for model evaluation
 │   │   └── ...
 │   ├── 🤖 Test2_codebert/          # CodeBERT model implementation
@@ -38,5 +50,119 @@ BioDefect/
 │── 📜 README.md                    
 └── ...
 ```
+
+---
+
+## 💻 Experiments
+### 📥 Install
+```sh
+conda env create -f environment.yml
+```
+
+### 🚀 Training Pipeline
+
+#### Step 1: Supervised Fine-Tuning (SFT)
+Train a base classifier with labeled data.
+```sh
+python run.py \
+    --num_labels=5 \
+    --train_data_file=. \
+    --eval_data_file=. \
+    --output_dir=./saved_models \
+    --runs_path=./runs \
+    --model_type=qwen3 \
+    --tokenizer_name=Qwen/Qwen3-0.6B \
+    --model_name_or_path=Qwen/Qwen3-0.6B \
+    --do_train \
+    --epoch 10 \
+    --block_size 400 \
+    --train_batch_size 16 \
+    --eval_batch_size 16 \
+    --learning_rate 2e-5 \
+    --max_grad_norm 1.0 \
+    --gradient_accumulation_steps 1
+    --adam_epsilon 1e-8
+    --evaluate_during_training \
+    --seed 123456
+```
+
+#### Step 2: Reward Model Training
+Then train the reward model with Top-1 + Pairwise Loss:
+```sh
+python run_RM.py \
+    --train_data_file=. \
+    --eval_data_file=. \
+    --output_dir=./saved_models \
+    --runs_path=./runs \
+    --model_type=qwen3 \
+    --tokenizer_name=Qwen/Qwen3-0.6B \
+    --model_name_or_path=Qwen/Qwen3-0.6B \
+    --do_train \
+    --epoch 10 \
+    --block_size 400 \
+    --train_batch_size 16 \
+    --eval_batch_size 16 \
+    --learning_rate 1e-5 \
+    --max_grad_norm 1.0 \
+    --gradient_accumulation_steps 1
+    --adam_epsilon 1e-8
+    --evaluate_during_training \
+    --seed 123456
+```
+
+#### Step 3: PPO Optimization
+Use the SFT model as policy initialization and optimize with reward feedback.
+```sh
+python run_RL.py \
+    --num_labels=5 \
+    --json_path=./SST-5.json \
+    --train_data_file=. \
+    --eval_data_file=. \
+    --sft_path=checkpoints/sft \
+    --reward_path=checkpoints/reward \
+    --output_dir=./saved_models \
+    --runs_path=./runs \
+    --model_type=qwen3 \
+    --tokenizer_name=Qwen/Qwen3-0.6B \
+    --model_name_or_path=Qwen/Qwen3-0.6B \
+    --do_train \
+    --epoch 10 \
+    --clip_range 0.2 \
+    --vf_coef 0.25
+    --block_size 400 \
+    --train_batch_size 16 \
+    --eval_batch_size 16 \
+    --learning_rate 1e-6 \
+    --max_grad_norm 1.0 \
+    --gradient_accumulation_steps 1
+    --adam_epsilon 1e-8
+    --evaluate_during_training \
+    --seed 123456
+```
+
+#### Example: Evaluation
+```sh
+python test.py \
+    --test_data_file=. \
+    --output_dir=./saved_models \
+    --results_path=./results \
+    --model_type=qwen3 \
+    --tokenizer_name=Qwen/Qwen3-0.6B \
+    --model_name_or_path=Qwen/Qwen3-0.6B \
+    --do_test \
+    --block_size 400 \
+    --eval_batch_size 8 \
+    --seed 123456
+```
+Metrics include:
+Accuracy
+F1
+Expected Calibration Error (ECE)
+MCC / G-Mean
+
+---
+
+## 📜 License
+This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) file for details.
 
 ---

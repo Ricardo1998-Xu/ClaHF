@@ -1,8 +1,16 @@
 # ClaHF: A Human Feedback-inspired Reinforcement Learning Framework for Improving Classification Tasks
 
 ## 🚀 Overview
-**ClaHF**: a human feedback-inspired reinforcement learning (RL) framework for text classification that integrates preference modeling and RL optimization into the classification pipeline without requiring additional human annotations. 
-![image](figure/fig2.pdf?raw=true)
+**ClaHF**: a human feedback-inspired reinforcement learning framework for text classification that integrates preference modeling and RL optimization into the classification pipeline without requiring additional human annotations. The overall framework of ClaHF is illustrated in Figure. (a) SFT to provide high-quality initialization. (b) Automatic construction of preference data from the original classification dataset. (c) Training the RM with preference data. (d) RL optimization of the policy model using the trained RM.
+
+![image](figure/fig2.png?raw=true)
+
+This repository provides an end-to-end implementation of ClaHF, including:
+- Supervised Fine-Tuning (SFT)
+- Reward Model training with pairwise preferences
+- PPO-based optimization for classification models
+- Adaptive KL control and evaluation on multiple datasets
+  
 ---
 
 ## 📂 Repository Structure
@@ -155,10 +163,7 @@ python test.py \
     --seed 123456
 ```
 Metrics include:
-Accuracy
-F1
-Expected Calibration Error (ECE)
-MCC / G-Mean
+Accuracy, F1, Expected Calibration Error (ECE), MCC
 
 ---
 

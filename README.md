@@ -166,6 +166,19 @@ Metrics include:
 Accuracy, F1, Expected Calibration Error (ECE), MCC
 
 ---
+### 🧪 Supported Tasks
+ClaHF is task-agnostic and, in principle, supports all text classification tasks.
+Due to the large size of some datasets, they are not directly uploaded to this repository. Please refer to the corresponding HuggingFace datasets and the original papers for detailed information.
+In this work, we implement and evaluate ClaHF on the following tasks:
+|  Task Type   | Dataset Examples  |
+|  ----  | ----  |
+| Sentiment Classification  | GLUE/SST-2, SST-5 |
+| Linguistic Acceptability  | GLUE/CoLA |
+| Semantic Similarity  | GLUE/MRPC |
+| Topic Classification  | AG News |
+| Emotion Recognition  | Emotion |
+| Vulnerability Detection  | CodeXGLUE/Devign |
+| Clone Detection  | CodeXGLUE/BigCloneBench |
 
 ## 📜 License
 This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) file for details.

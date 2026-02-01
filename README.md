@@ -37,7 +37,7 @@ ClaHF/
 │   └── ...                    
 │
 │── 📁 Code/            # Implementations of classification models
-│   ├── 🤖 Test1_bert/              # BERT model implementation
+│   ├── 🤖 bert/                    # BERT model implementation
 │   │   ├── 📜 clss_indices.json    # Label mapping file
 │   │   ├── 📜 model.py             # Model definition
 │   │   ├── 📜 RewardModel.py       # Reward model definition
@@ -46,13 +46,13 @@ ClaHF/
 │   │   ├── 📜 run_RM.py            # Script for training the RM
 │   │   ├── 📜 test.py              # Script for model evaluation
 │   │   └── ...
-│   ├── 🤖 Test2_codebert/          # CodeBERT model implementation
-│   ├── 🤖 Test3_t5/                # T5 model implementation
-│   ├── 🤖 Test4_codet5/            # CodeT5 model implementation
-│   ├── 🤖 Test5_codet5+/           # CodeT5+ model implementation
-│   ├── 🤖 Test6_opt/               # OPT model implementation
-│   ├── 🤖 Test7_codegen/           # CodeGen model implementation
-│   └── 🤖 Test8_qwen3/             # QWen3 model implementation
+│   ├── 🤖 codebert/                # CodeBERT model implementation
+│   ├── 🤖 t5/                      # T5 model implementation
+│   ├── 🤖 codet5/                  # CodeT5 model implementation
+│   ├── 🤖 codet5+/                 # CodeT5+ model implementation
+│   ├── 🤖 opt/                     # OPT model implementation
+│   ├── 🤖 codegen/                 # CodeGen model implementation
+│   └── 🤖 qwen3/                   # QWen3 model implementation
 │   
 │── 📜 environment.yaml             # Environment configuration file
 │── 📜 README.md                    
